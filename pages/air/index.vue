@@ -1,5 +1,7 @@
 <template>
-  
+    <div>
+        飞机票
+    </div>
 </template>
 
 <script>

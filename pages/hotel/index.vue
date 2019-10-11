@@ -1,5 +1,7 @@
 <template>
-  
+    <div>
+        酒店页面
+    </div>
 </template>
 
 <script>

@@ -1,5 +1,7 @@
 <template>
-  
+    <div>
+        闲云旅游主页
+    </div>
 </template>
 
 <script>
