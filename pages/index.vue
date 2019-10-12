@@ -70,7 +70,7 @@ export default {
       current: 0 // 当前选中的选项
     };
   },
-  mounted() {
+ mounted() {
     this.$axios({
       url: "/scenics/banners"
     }).then(res => {
@@ -87,7 +87,14 @@ export default {
         this.$router.push('/air')
       }
     },
-    handleSearch() {}
+    handleSearch() {
+      // 获取点击的那一个对象内容
+      const item = this.options[this.current]
+      // console.log(item)
+      // 把路径和输入框的值拼接在一起
+      this.$router.push(item. pageUrl+this.searchValue)
+
+    }
   }
 };
 </script>
