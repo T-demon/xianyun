@@ -40,7 +40,30 @@ export default {
   methods: {
     // 提交登录
     handleLoginSubmit() {
-      console.log(this.form);
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          this.$axios({
+            url: "/accounts/login",
+            method: "POST",
+            data: this.form
+          }).then(res => {           
+            if(res.status==200){
+                console.log(res);
+                
+                this.$message.success("登陆成功")
+                 const data = res.data
+                 this.$store.commit("user/setUserInfo",data)
+
+                 setTimeout(() => {
+                        this.$router.replace("/")
+                    }, 1000);
+            }else{
+                 this.$message.error("账号或密码错误");   
+            }
+            
+          });
+        }
+      });
     }
   }
 };
