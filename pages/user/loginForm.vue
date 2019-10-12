@@ -1,10 +1,11 @@
 <template>
   <div>
     <el-form :model="form" ref="form" :rules="rules" class="form">
+      <!-- 账号 -->
       <el-form-item class="form-item" prop="username">
-        <el-input placeholder="用户名/手机" v-model="form.uesrname"></el-input>
+        <el-input placeholder="用户名/手机号" type="text" v-model="form.username"></el-input>
       </el-form-item>
-
+      <!-- 密码 -->
       <el-form-item class="form-item" prop="password">
         <el-input placeholder="密码" type="password" v-model="form.password"></el-input>
       </el-form-item>
