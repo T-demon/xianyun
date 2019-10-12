@@ -70,13 +70,14 @@ export default {
       current: 0 // 当前选中的选项
     };
   },
- mounted() {
-    this.$axios({
+ async mounted() {
+
+    const res =await this.$axios({
       url: "/scenics/banners"
-    }).then(res => {
+    })
+   
       const { data } = res.data;
       this.banners = data;
-    });
   },
 
   methods: {

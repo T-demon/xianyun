@@ -48,7 +48,6 @@ export default {
             data: this.form
           }).then(res => {           
             if(res.status==200){
-                console.log(res);
                 
                 this.$message.success("登陆成功")
                  const data = res.data
