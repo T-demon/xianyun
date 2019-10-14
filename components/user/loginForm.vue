@@ -40,13 +40,15 @@ export default {
   methods: {
     // 提交登录
     handleLoginSubmit() {
-      this.$refs["form"].validate(valid => {
+      this.$refs["form"].validate(async valid => {
         if (valid) {
-          this.$axios({
+
+        const res = await this.$axios({
             url: "/accounts/login",
             method: "POST",
             data: this.form
-          }).then(res => {           
+          })
+
             if(res.status==200){
                 
                 this.$message.success("登陆成功")
@@ -59,8 +61,9 @@ export default {
             }else{
                  this.$message.error("账号或密码错误");   
             }
-            
-          });
+           
+
+         
         }
       });
     }
