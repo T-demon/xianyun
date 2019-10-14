@@ -22,6 +22,7 @@
           placeholder="请搜索出发城市"
           v-model="form.departCity"
           @select="handleDepartSelect"
+          @blur="handleBlur('depart')"
           class="el-autocomplete"
         ></el-autocomplete>
       </el-form-item>
@@ -30,6 +31,7 @@
           :fetch-suggestions="queryDestSearch"
           placeholder="请搜索到达城市"
           @select="handleDestSelect"
+          @blur="handleBlur('dest')"
           v-model="form.destCity"
           class="el-autocomplete"
         ></el-autocomplete>
@@ -63,7 +65,8 @@ export default {
         destCity: "", // 到达城市
         destCode: "", // 到达城市代码
         departDate: "" // 日期字符串
-      }
+      },
+      cities: []
     };
   },
   methods: {
@@ -80,7 +83,9 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
-      if (!value) return;
+      if (!value) 
+    //   cb([])
+      return;
 
       this.$axios({
         url: "/airs/city?name=" + value
@@ -92,6 +97,7 @@ export default {
           v.value = v.name.replace("市", "");
           return v;
         });
+        this.cities = newData;
         cb(newData);
       });
     },
@@ -114,16 +120,22 @@ export default {
       this.form.destCode = item.sort;
     },
 
+    handleBlur(type) {
+      console.log(this.cities);
+      this.form[type+"City"] = this.cities[0].value;
+      this.form[type+"Code"] = this.cities[0].sort;
+    },
+
     // 确认选择日期时触发
     handleDate(value) {},
 
     // 触发和目标城市切换时触发
-    handleReverse() {
-        
-    },
+    handleReverse() {},
 
     // 提交表单是触发
-    handleSubmit() {}
+    handleSubmit() {
+      console.log(this.form);
+    }
   },
   mounted() {}
 };
