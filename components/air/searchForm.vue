@@ -165,14 +165,16 @@ export default {
 
         if (!value) {
           this.$message.error(message);
-        valid= false;
+          valid = false;
         }
       });
 
-        this.$router.push({
-          path: "/air/flights",
-          query: this.form
-        });
+      if (!valid) return;
+      
+      this.$router.push({
+        path: "/air/flights",
+        query: this.form
+      });
     }
   },
   mounted() {}
