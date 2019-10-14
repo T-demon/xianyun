@@ -42,28 +42,11 @@ export default {
     handleLoginSubmit() {
       this.$refs["form"].validate(async valid => {
         if (valid) {
-
-        const res = await this.$axios({
-            url: "/accounts/login",
-            method: "POST",
-            data: this.form
-          })
-
-            if(res.status==200){
-                
-                this.$message.success("登陆成功")
-                 const data = res.data
-                 this.$store.commit("user/setUserInfo",data)
-
-                 setTimeout(() => {
-                        this.$router.replace("/")
-                    }, 1000);
-            }else{
-                 this.$message.error("账号或密码错误");   
-            }
-           
-
-         
+          const res = await this.$store.dispatch("user/login", this.form);
+          if (res.status === 200) {
+            this.$message.success("登录成功");
+            this.$router.push("/");
+          }
         }
       });
     }

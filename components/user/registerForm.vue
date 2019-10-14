@@ -58,7 +58,9 @@ export default {
 
       // 表单规则
       rules: {
-        username: [ { required: true, message: "请输入用户名", trigger: "blur" }],
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
         nickname: [{ required: true, message: "请输入昵称", trigger: "blur" }],
         captcha: [{ required: true, message: "请输入密码", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
@@ -67,39 +69,26 @@ export default {
     };
   },
   methods: {
-    handleSendCaptcha() {
-      this.$axios({
-        method: "POST",
-        url: "/captchas",
-        data: {
-          tel: this.form.username // 手机号码
-        }
-      }).then(res => {
-        if (res.status == 200) {
-          const data = res.data;
-          this.$message.success(`手机验证码为${data.code}`);
-        }
-      });
+    async handleSendCaptcha() {
+ 
+    const res = await this.$store.dispatch("user/SendCaptcha", this.form.username);
+
+      if (res.status == 200) {
+        const data = res.data;
+        this.$message.success(`手机验证码为${data.code}`);
+      }
     },
+    
     handleregisterSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-        const {checkpassword,...datas} =this.form
-          this.$axios({
-            url:"/accounts/register",
-            method: "POST",
-            data:datas
-          }).then(res=>{
-             if(res.status==200){
-                this.$message.success("注册成功")
-                const data = res.data
-                 this.$store.commit("user/setUserInfo",data)
-                this.$router.push('/')
-             }
-            
-          })
+          const { checkpassword, ...datas } = this.form;
+          const res = this.$store.dispatch("user/register", datas);
+          if (res.status == 200) {
+            this.$message.success("注册成功");
+            this.$router.push("/");
+          }
         }
-        
       });
     }
   }
