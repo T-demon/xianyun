@@ -99,32 +99,28 @@ export default {
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDestSearch(value, cb) {
-      if (!value) return;
-
-      this.$axios({
-        url: "/airs/city?name=" + value
-      }).then(res => {
-        const { data } = res.data;
-        //    console.log(data);
-        const newData = data.map(v => {
-          v.value = v.name.replace("市", "");
-          return v;
-        });
-        cb(newData);
-      });
+      this.queryDepartSearch(value, cb);
     },
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {},
+    handleDepartSelect(item) {
+      this.form.departCity = item.value;
+      this.form.departCode = item.sort;
+    },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {},
+    handleDestSelect(item) {
+      this.form.destCity = item.value;
+      this.form.destCode = item.sort;
+    },
 
     // 确认选择日期时触发
     handleDate(value) {},
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+        
+    },
 
     // 提交表单是触发
     handleSubmit() {}
