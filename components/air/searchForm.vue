@@ -91,10 +91,10 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
-      if (!value)
-        //   cb([])
+      if (!value) {
+        cb([]);
         return;
-
+      }
       this.$axios({
         url: "/airs/city?name=" + value
       }).then(res => {
@@ -151,17 +151,28 @@ export default {
 
     // 提交表单是触发
     handleSubmit() {
+      const rules = {
+        departCity: { message: "请输入出发城市", value: this.form.departCity },
+        destCity: { message: "请输入目标城市", value: this.form.destCity },
+        departDate: { message: "请输入出发时间", value: this.form.departDate }
+      };
+      //  Object.keys循环出来一个数组，数组中的元素为对象中的键
 
+      let valid = true;
+      Object.keys(rules).forEach(v => {
+        if (!valid) return;
+        const { message, value } = rules[v];
 
-
-
-
-
-        
-      this.$router.push({
-        path: "/air/flights",
-        query: this.form
+        if (!value) {
+          this.$message.error(message);
+        valid= false;
+        }
       });
+
+        this.$router.push({
+          path: "/air/flights",
+          query: this.form
+        });
     }
   },
   mounted() {}
