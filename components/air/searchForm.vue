@@ -38,7 +38,13 @@
       </el-form-item>
       <el-form-item label="出发时间">
         <!-- change 用户确认选择日期时触发 -->
-        <el-date-picker type="date" placeholder="请选择日期" style="width: 100%;" @change="handleDate"></el-date-picker>
+        <el-date-picker
+          type="date"
+          placeholder="请选择日期"
+          style="width: 100%;"
+          @change="handleDate"
+          v-model="formdata"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label>
         <el-button style="width:100%;" type="primary" icon="el-icon-search" @click="handleSubmit">搜索</el-button>
@@ -51,6 +57,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data() {
     return {
@@ -66,7 +73,8 @@ export default {
         destCode: "", // 到达城市代码
         departDate: "" // 日期字符串
       },
-      cities: []
+      cities: [],
+      formdata: ""
     };
   },
   methods: {
@@ -83,9 +91,9 @@ export default {
     // 出发城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDepartSearch(value, cb) {
-      if (!value) 
-    //   cb([])
-      return;
+      if (!value)
+        //   cb([])
+        return;
 
       this.$axios({
         url: "/airs/city?name=" + value
@@ -122,19 +130,38 @@ export default {
 
     handleBlur(type) {
       console.log(this.cities);
-      this.form[type+"City"] = this.cities[0].value;
-      this.form[type+"Code"] = this.cities[0].sort;
+      this.form[type + "City"] = this.cities[0].value;
+      this.form[type + "Code"] = this.cities[0].sort;
     },
 
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      this.form.departDate = moment(value).format(`YYYY-MM-DD`);
+    },
 
     // 触发和目标城市切换时触发
-    handleReverse() {},
+    handleReverse() {
+      const { departCity, departCode, destCity, destCode } = this.form;
+      this.form.departCity = destCity;
+      this.form.departCode = destCode;
+
+      this.form.destCity = departCity;
+      this.form.destCode = departCode;
+    },
 
     // 提交表单是触发
     handleSubmit() {
-      console.log(this.form);
+
+
+
+
+
+
+        
+      this.$router.push({
+        path: "/air/flights",
+        query: this.form
+      });
     }
   },
   mounted() {}
