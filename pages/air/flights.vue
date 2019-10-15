@@ -4,7 +4,9 @@
       <!-- 顶部过滤列表 -->
       <div class="flights-content">
         <!-- 过滤条件 -->
-        <div></div>
+        <div>
+          <FlightsFilters :data="cacheFlightsData" />
+        </div>
 
         <!-- 航班头部布局 -->
         <div>
@@ -13,7 +15,12 @@
 
         <!-- 航班信息 -->
         <div>
-          <FlightsItem v-for="(item,index) in dataList" :key="index" :data="item" />
+          <FlightsItem
+            v-for="(item,index) in dataList"
+            :key="index"
+            :data="item"
+            v-loading="loading"
+          />
 
           <!-- 分页 -->
           <el-row type="flex" justify="center" style="margin-top:10px;">
@@ -23,6 +30,7 @@
             <!-- page-size：当前条数 -->
             <!-- total：总条数 -->
             <el-pagination
+              background
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="pageIndex"
@@ -46,25 +54,33 @@
 <script>
 import FlightsHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
+import FlightsFilters from "@/components/air/flightsFilters.vue";
 
 import moment from "moment";
 
 export default {
+  components: {
+    FlightsHead,
+    FlightsItem,
+    FlightsFilters
+  },
+
   data() {
     return {
       flightsData: {
         flights: []
       },
-   
+
+      cacheFlightsData: {
+        flights: [],
+        info: {},
+        options: {}
+      },
 
       pageIndex: 1,
-      pageSize: 5
+      pageSize: 5,
+      loading: true
     };
-  },
-
-  components: {
-    FlightsHead,
-    FlightsItem
   },
 
   mounted() {
@@ -74,7 +90,9 @@ export default {
     }).then(res => {
       console.log(res.data);
       this.flightsData = res.data;
+      this.cacheFlightsData={...res.data}
     });
+    this.loading = false;
   },
 
   methods: {
@@ -90,12 +108,12 @@ export default {
   },
 
   computed: {
-    dataList(){
-        const arr = this.flightsData.flights.slice(
-            (this.pageIndex-1)*this.pageSize,
-            this.pageIndex*this.pageSize
-        );
-        return arr
+    dataList() {
+      const arr = this.flightsData.flights.slice(
+        (this.pageIndex - 1) * this.pageSize,
+        this.pageIndex * this.pageSize
+      );
+      return arr;
     }
   }
 };
