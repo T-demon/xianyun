@@ -13,7 +13,7 @@
                             <span>{{data.org_airport_name}}{{data.org_airport_quay}}</span>
                         </el-col>
                         <el-col :span="8" class="flight-time">
-                            <span>2时20分</span>
+                            <span>{{rankTime}}</span>
                         </el-col>
                         <el-col :span="8" class="flight-airport">
                             <strong>{{data.arr_time}}</strong>
@@ -67,10 +67,36 @@ export default {
         }
     },
 
-    mounted(){
-        
-        
+
+    computed:{
+        rankTime(){
+
+            const arrTime = this.data.arr_time.split(":")
+            const depTime =this.data.dep_time.split(":")
+
+
+            if(arrTime[0]<depTime[0]){
+                arrTime[0] +=24
+
+            }
+
+
+            const end = arrTime[0] * 60 + +arrTime[1]
+            const start = depTime[0]*60 + +depTime[1]
+            const dis = end-start
+
+
+            const hours = Math.floor(dis/60)
+            const min =dis%60;
+
+
+            return`${hours}小时${min}分`
+
+
+        }
     }
+
+  
     
 }
 </script>
