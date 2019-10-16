@@ -109,7 +109,17 @@ export default {
     },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+    async handleSendCaptcha() {
+      if (!this.contactPhone) {
+        this.$message.error("手机号码不能为空");
+        return;
+      }
+      const res = await this.$store.dispatch(
+        "user/SendCaptcha",
+        this.contactPhone
+      );
+      this.$message.success(`当前的验证码：` + res.data.code);
+    },
 
     // 提交订单
     handleSubmit() {
@@ -124,7 +134,7 @@ export default {
         air: this.$route.query.id
       };
 
-      console.log(data)
+      console.log(data);
     }
   },
 
