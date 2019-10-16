@@ -100,15 +100,18 @@ export default {
     },
 
     // 选择机型时候触发
-    handleAirSize(value) {},
-
-    // 撤销条件时候触发
-    handleFiltersCancel() {
-      (this.airport = ""),
-        (this.flightTimes = ""),
-        (this.company = ""),
-        (this.airport = "");
+    handleAirSize(value) {
+      const arr = this.data.flights.filter(v => v.plane_size === value);
+      this.$emit("setDataList", arr);
     }
+  },
+
+  // 撤销条件时候触发
+  handleFiltersCancel() {
+    (this.airport = ""),
+      (this.flightTimes = ""),
+      (this.company = ""),
+      (this.airport = "");
   }
 };
 </script>
