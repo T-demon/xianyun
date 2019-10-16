@@ -29,8 +29,12 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item">
-          <el-checkbox label="航空意外险：￥30/份×1  最高赔付260万" border></el-checkbox>
+        <div class="insurance-item" v-for="(item,index) in this.infoData.insurances" :key="index">
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×${users.length}  最高赔付${item.compensation}`"
+            @change="handleInsurance(item.id)"
+            border
+          ></el-checkbox>
         </div>
       </div>
     </div>
@@ -65,10 +69,13 @@
 export default {
   data() {
     return {
-      users:[{
-          username:'',
-          id:""
-      }]
+      users: [
+        {
+          username: "",
+          id: ""
+        }
+      ],
+      infoData: {}
     };
   },
   methods: {
@@ -82,7 +89,7 @@ export default {
 
     // 移除乘机人
     handleDeleteUser(index) {
-        this.users.splice(index,1)
+      this.users.splice(index, 1);
     },
 
     // 发送手机验证码
@@ -90,6 +97,18 @@ export default {
 
     // 提交订单
     handleSubmit() {}
+  },
+
+  mounted() {
+    const { id, seat_xid } = this.$route.query;
+    this.$axios({
+      url: "/airs/" + id,
+      params: {
+        seat_xid: this.$route.query.seat_xid
+      }
+    }).then(res => {
+      this.infoData = res.data;
+    });
   }
 };
 </script>
