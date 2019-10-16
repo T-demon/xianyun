@@ -137,11 +137,14 @@ export default {
       this.$axios({
         url: "/airorders",
         method: "POST",
-        data
+        data,
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+        }
       }).then(res => {
         if (res.status === 200) {
-          this.$message.success("登录成功");
-          this.$router.back("/");
+          this.$message.success("提交成功");
+          this.$router.push("#");
         }
       });
     }
