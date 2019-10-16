@@ -58,6 +58,7 @@ export default {
       default: {}
     }
   },
+
   data() {
     return {
       airport: "", // 机场
@@ -103,15 +104,15 @@ export default {
     handleAirSize(value) {
       const arr = this.data.flights.filter(v => v.plane_size === value);
       this.$emit("setDataList", arr);
-    }
-  },
+    },
 
-  // 撤销条件时候触发
-  handleFiltersCancel() {
-    (this.airport = ""),
-      (this.flightTimes = ""),
-      (this.company = ""),
-      (this.airport = "");
+    // 撤销条件时候触发
+    handleFiltersCancel() {
+      this.airport = "";
+      this.flightTimes = "";
+      this.company = "";
+      this.airSize = "";
+    }
   }
 };
 </script>

@@ -1,0 +1,111 @@
+<template>
+    <div class="aside">
+       <!-- 其他代码 -->
+
+        <div class="history">
+            <h5>历史查询</h5>
+            <nuxt-link 
+            :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"  
+            v-for="(item, index) in airsLog"
+            :key="index">
+                <el-row type="flex" 
+                justify="space-between" 
+                align="middle"
+                class="history-item">
+                    <div class="air-info">
+                        <div class="to-from">
+                            {{item.departCity}} - {{item.destCity}}
+                        </div>
+                        <p>{{item.departDate}}</p>
+                    </div>
+                    <span>选择</span>
+                </el-row>
+            </nuxt-link>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data(){
+        return {
+            airsLog: []
+        }
+    },
+
+    mounted(){
+        // 获取历史记录
+        this.airsLog = JSON.parse(localStorage.getItem("airs") || `[]`);
+    }
+}
+</script>
+
+
+<style scoped lang="less">
+.statement{
+    border:1px #ddd solid;
+
+    .statement-list{
+        padding: 10px 0;
+        > div{
+            text-align: center;
+            i{
+                display: block;
+                font-size: 40px;
+            }
+            span{
+                font-size:12px;
+            }
+        }
+    }
+    .service-tel{
+        height: 32px;
+        line-height: 32px;
+        padding:0 10px;
+        background: #f6f6f6;
+        font-size: 14px;
+    }
+}
+
+.history{
+    border:1px #ddd solid;
+    padding:10px;
+    margin-top:10px;
+
+    h5{
+        font-size: 16px;
+        font-weight: normal;
+        padding-bottom: 10px;
+        border-bottom:1px #eee solid;
+    }
+
+    .history-item{
+        padding:10px 0;
+        font-size: 14px;
+        border-bottom: 1px #eee solid;
+
+        &:last-child{
+            border:none;
+        }
+
+        .to-from{
+            margin-bottom: 5px;
+        }
+
+        p{
+            font-size: 12px;
+            color:#666;
+        }
+
+        span{
+            color:#fff;
+            display: block;
+            padding:2px 10px;
+            background: orange;
+            border-radius: 4px;
+            font-size:12px;
+            cursor: pointer;
+        }
+    }
+}
+</style>

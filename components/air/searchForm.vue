@@ -129,9 +129,11 @@ export default {
     },
 
     handleBlur(type) {
-      console.log(this.cities);
-      this.form[type + "City"] = this.cities[0].value;
-      this.form[type + "Code"] = this.cities[0].sort;
+      if (this.cities[0]) {
+        console.log(this.cities);
+        this.form[type + "City"] = this.cities[0].value;
+        this.form[type + "Code"] = this.cities[0].sort;
+      }
     },
 
     // 确认选择日期时触发
@@ -170,7 +172,12 @@ export default {
       });
 
       if (!valid) return;
-      
+
+
+      const airs = JSON.parse(localStorage.getItem("airs")||`[]`)
+      airs.push(this.form)
+      localStorage.setItem("airs",JSON.stringify(airs))
+
       this.$router.push({
         path: "/air/flights",
         query: this.form

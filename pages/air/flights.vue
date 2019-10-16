@@ -45,7 +45,7 @@
 
       <!-- 侧边栏 -->
       <div class="aside">
-        <!-- 侧边栏组件 -->
+        <FlightsAside />
       </div>
     </el-row>
   </section>
@@ -55,14 +55,15 @@
 import FlightsHead from "@/components/air/flightsListHead";
 import FlightsItem from "@/components/air/flightsItem";
 import FlightsFilters from "@/components/air/flightsFilters.vue";
-
+import FlightsAside from "@/components/air/flightsAside.vue";
 import moment from "moment";
 
 export default {
   components: {
     FlightsHead,
     FlightsItem,
-    FlightsFilters
+    FlightsFilters,
+    FlightsAside
   },
 
   data() {
@@ -81,30 +82,34 @@ export default {
 
       pageIndex: 1,
       pageSize: 5,
-      loading: true,
+      loading: true
     };
   },
 
   mounted() {
-    this.$axios({
-      url: "airs",
-      params: this.$route.query
-    }).then(res => {
-      console.log(res.data);
-      this.flightsData = res.data;
-      this.cacheFlightsData = { ...res.data };
-    });
-    this.loading = false;
+    this.getDataList()
   },
 
   methods: {
+    getDataList() {
+      this.$axios({
+        url: "airs",
+        params: this.$route.query
+      }).then(res => {
+        console.log(res.data);
+        this.flightsData = res.data;
+        this.cacheFlightsData = { ...res.data };
+      });
+      this.loading = false;
+    },
+
     setDatalist(arr) {
-      console.log(arr)
-       if(arr){    
-                this.pageIndex = 1;
-                this.flightsData.flights = arr;
-                this.flightsData.total = arr.length;
-            }
+      console.log(arr);
+      if (arr) {
+        this.pageIndex = 1;
+        this.flightsData.flights = arr;
+        this.flightsData.total = arr.length;
+      }
 
       this.flightsData.flights = arr;
     },
@@ -126,6 +131,12 @@ export default {
         this.pageIndex * this.pageSize
       );
       return arr;
+    }
+  },
+
+  watch: {
+    $route(){
+      this.getDataList()
     }
   }
 };
