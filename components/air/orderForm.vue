@@ -134,7 +134,16 @@ export default {
         air: this.$route.query.id
       };
 
-      console.log(data);
+      this.$axios({
+        url: "/airorders",
+        method: "POST",
+        data
+      }).then(res => {
+        if (res.status === 200) {
+          this.$message.success("登录成功");
+          this.$router.back("/");
+        }
+      });
     }
   },
 
