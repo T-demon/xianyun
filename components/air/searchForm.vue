@@ -174,9 +174,7 @@ export default {
       if (!valid) return;
 
 
-      const airs = JSON.parse(localStorage.getItem("airs")||`[]`)
-      airs.push(this.form)
-      localStorage.setItem("airs",JSON.stringify(airs))
+       this.$store.commit("air/setHistory", this.form);
 
       this.$router.push({
         path: "/air/flights",

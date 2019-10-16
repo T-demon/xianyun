@@ -1,6 +1,6 @@
 <template>
   <div class="flight-item">
-    <div @click='handleShowRecommend'>
+    <div @click="handleShowRecommend">
       <!-- 显示的机票信息 -->
       <el-row type="flex" align="middle" class="flight-info">
         <el-col :span="6">
@@ -47,7 +47,13 @@
             </el-col>
             <el-col :span="5" class="price">￥{{item.org_settle_price}}</el-col>
             <el-col :span="3" class="choose-button">
-              <el-button type="warning" size="mini" @click="handleChoose">选定</el-button>
+              <nuxt-link :to="`/air/order?id=${data.id}&seat_xid=${item.seat_xid}`">
+                <el-button
+                  type="warning"
+                  size="mini"
+                  @click="handleChoose(data.id, item.seat_xid)"
+                >选定</el-button>
+              </nuxt-link>
               <p>剩余{{item.discount}}</p>
             </el-col>
           </el-row>
@@ -59,67 +65,57 @@
 
 <script>
 export default {
+  data() {
+    return {
+      showRecommend: false
+    };
+  },
 
-    data(){
-        return{
-            showRecommend:false
-        }
-    },
-
-    props: {
-        // 数据
-        data: {
-            type: Object,
-            // 默认是空数组
-            default: {}
-        }
-    },
-
-
-
-    computed:{
-        rankTime(){
-
-            const arrTime = this.data.arr_time.split(":")
-            const depTime =this.data.dep_time.split(":")
-
-
-            if(arrTime[0]<depTime[0]){
-                arrTime[0] +=24
-
-            }
-
-
-            const end = arrTime[0] * 60 + +arrTime[1]
-            const start = depTime[0]*60 + +depTime[1]
-            const dis = end-start
-
-
-            const hours = Math.floor(dis/60)
-            const min =dis%60;
-
-
-            return`${hours}小时${min}分`
-
-
-        }
-    },
-
-
-    methods:{
-
-        handleShowRecommend(){
-            this.showRecommend = !this.showRecommend
-        },
-
-        handleChoose(){
-          console.log(123)
-        }
+  props: {
+    // 数据
+    data: {
+      type: Object,
+      // 默认是空数组
+      default: {}
     }
+  },
 
-  
-    
-}
+  computed: {
+    rankTime() {
+      const arrTime = this.data.arr_time.split(":");
+      const depTime = this.data.dep_time.split(":");
+
+      if (arrTime[0] < depTime[0]) {
+        arrTime[0] += 24;
+      }
+
+      const end = arrTime[0] * 60 + +arrTime[1];
+      const start = depTime[0] * 60 + +depTime[1];
+      const dis = end - start;
+
+      const hours = Math.floor(dis / 60);
+      const min = dis % 60;
+
+      return `${hours}小时${min}分`;
+    }
+  },
+
+  methods: {
+    handleShowRecommend() {
+      this.showRecommend = !this.showRecommend;
+    },
+
+    handleChoose(id, seatId) {
+      this.$router.push({
+        path: "/air/order",
+        query: {
+          id,
+          seat_xid: seatId
+        }
+      });
+    }
+  }
+};
 </script>
 
 <style scoped lang="less">

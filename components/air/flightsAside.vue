@@ -6,7 +6,7 @@
             <h5>历史查询</h5>
             <nuxt-link 
             :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"  
-            v-for="(item, index) in airsLog"
+            v-for="(item, index) in $store.state.air.history"
             :key="index">
                 <el-row type="flex" 
                 justify="space-between" 
@@ -27,16 +27,6 @@
 
 <script>
 export default {
-    data(){
-        return {
-            airsLog: []
-        }
-    },
-
-    mounted(){
-        // 获取历史记录
-        this.airsLog = JSON.parse(localStorage.getItem("airs") || `[]`);
-    }
 }
 </script>
 
