@@ -1,8 +1,26 @@
 <template>
     <div class="aside">
-       <!-- 其他代码 -->
+        <div class="statement">
+            <el-row type="flex" justify="space-between" class="statement-list">
+                <el-col :span="8">
+                    <i class="iconfont iconweibiaoti-_huabanfuben" style="color:#409EFF;"></i>
+                    <span>航协认证</span>
+                </el-col>
+                <el-col :span="8">
+                    <i class="iconfont iconbaozheng" style="color:green;"></i>
+                    <span>出行保证</span>
+                </el-col>
+                <el-col :span="8">
+                    <i class="iconfont icondianhua" style="color:#409EFF;"></i>
+                    <span>7x24</span>
+                </el-col>
+            </el-row>
+            <p class="service-tel">
+                免费客服电话：4006345678转2
+            </p>
+        </div>
 
-        <div class="history">
+      <div class="history">
             <h5>历史查询</h5>
             <nuxt-link 
             :to="`/air/flights?departCity=${item.departCity}&departCode=${item.departCode}&destCity=${item.destCity}&destCode=${item.destCode}&departDate=${item.departDate}`"  
@@ -27,9 +45,9 @@
 
 <script>
 export default {
+
 }
 </script>
-
 
 <style scoped lang="less">
 .statement{
