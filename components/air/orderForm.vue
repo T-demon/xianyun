@@ -44,11 +44,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -56,7 +56,7 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -75,7 +75,13 @@ export default {
           id: ""
         }
       ],
-      infoData: {}
+      infoData: {},
+
+      insurances: [], // 保险数据
+      contactName: "", // 联系人名字
+      contactPhone: "", // 联系人电话
+      captcha: "", // 验证码
+      invoice: false // 发票
     };
   },
   methods: {
@@ -92,11 +98,34 @@ export default {
       this.users.splice(index, 1);
     },
 
+    // 选择保险
+    handleInsurance(id) {
+      const index = this.insurances.indexOf(id);
+      if (index > -1) {
+        this.insurances.splice(index, 1);
+      } else {
+        this.insurances.push(id);
+      }
+    },
+
     // 发送手机验证码
     handleSendCaptcha() {},
 
     // 提交订单
-    handleSubmit() {}
+    handleSubmit() {
+      const data = {
+        users: this.users,
+        insurances: this.insurances,
+        contactName: this.contactName,
+        contactPhone: this.contactPhone,
+        captcha: this.captcha,
+        invoice: this.invoice,
+        seat_xid: this.$route.query.seat_xid,
+        air: this.$route.query.id
+      };
+
+      console.log(data)
+    }
   },
 
   mounted() {
