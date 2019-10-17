@@ -158,6 +158,8 @@ export default {
         seat_xid: this.$route.query.seat_xid
       }
     }).then(res => {
+      console.log(res.data)
+      this.$store.commit("air/setairinfo", res.data);
       this.infoData = res.data;
     });
   }
