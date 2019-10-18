@@ -30,7 +30,8 @@ import { async } from "q";
 export default {
   data() {
     return {
-      order: {}
+      order: {},
+      timer: null
     };
   },
 
@@ -55,29 +56,33 @@ export default {
       QRCode.toCanvas(stage, this.order.payInfo.code_url, {
         width: 200
       });
-    }, 200);
 
-    this.time = setInterval(async () => {
-      const res = await this.$axios({
-        url: "/airorders/checkpay",
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
-        },
-        data: {
-          id: this.$route.query.id,
-          nonce_str: this.order.price,
-          out_trade_no: this.order.orderNo
+      this.timer = setInterval(async () => {
+        const res = await this.$axios({
+          url: "/airorders/checkpay",
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+          },
+          data: {
+            id: this.$route.query.id,
+            nonce_str: this.order.price,
+            out_trade_no: this.order.orderNo
+          }
+        });
+
+        const { statusTxt } = res.data;
+
+        if (statusTxt === "支付完成") {
+          this.$message.success(statusTxt);
+          clearInterval(this.timer);
         }
-      });
+      }, 3000);
+    }, 200);
+  },
 
-      const { statusTxt } = res.data;
-
-      if (statusTxt === "支付完成") {
-        this.$message.success(statusTxt);
-        clearInterval(this.timer);
-      }
-    }, 3000);
+  destroyed() {
+    clearInterval(this.timer);
   },
 
   methods: {}
