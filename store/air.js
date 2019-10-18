@@ -1,7 +1,8 @@
 export const state = () => {
     return{
         history:[],
-        airinfo:{}
+        airinfo:{},
+        AllPirce:0
     }
   }
   
@@ -11,6 +12,9 @@ export const state = () => {
     },
     setairinfo(state, data) {
       state.airinfo=data
+    },
+    setAllPirce(state, price) {
+      state.AllPirce=price
     },
   }
 
