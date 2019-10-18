@@ -62,8 +62,8 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
-      <!-- 模板中引用总价格触发计算 -->
-      <span v-show="false">{{allPrice}}</span>
+    <!-- 模板中引用总价格触发计算 -->
+    <span v-show="false">{{allPrice}}</span>
   </div>
 </template>
 
@@ -146,38 +146,43 @@ export default {
       }).then(res => {
         if (res.status === 200) {
           this.$message.success("提交成功");
-          this.$router.push("#");
+          const {data: {id}} = res.data;
+          this.$router.push({
+            path: "/air/pay",
+            query: {
+              id
+            }
+          });
         }
       });
     }
   },
 
-  computed:{
-   allPrice(){
+  computed: {
+    allPrice() {
+      // 如果请求未完成，暂时不需要计算，返回0；
+      if (!this.infoData.seat_infos) {
+        return 0;
+      }
 
-            // 如果请求未完成，暂时不需要计算，返回0；
-            if(!this.infoData.seat_infos){
-                return 0;
-            }
+      let price = 0;
 
-            let price = 0;
+      // 机票单价
+      price += this.infoData.seat_infos.org_settle_price;
 
-            // 机票单价，取座位信息的第一个价格
-            price += this.infoData.seat_infos.org_settle_price;
+      // 燃油费
+      price += this.infoData.airport_tax_audlet;
 
-            // 燃油费
-            price += this.infoData.airport_tax_audlet;
-            
-            // 保险数据
-            price += 30 * this.insurances.length;
+      // 保险数据
+      price += 30 * this.insurances.length;
 
-            price *= this.users.length;
+      price *= this.users.length;
 
-            // 把值存到store
-            this.$store.commit("air/setAllPirce", price)
+      // 把值存到store
+      this.$store.commit("air/setAllPirce", price);
 
-            return price;
-        }
+      return price;
+    }
   },
 
   mounted() {
@@ -188,7 +193,7 @@ export default {
         seat_xid: this.$route.query.seat_xid
       }
     }).then(res => {
-      console.log(res.data)
+      console.log(res.data);
       this.$store.commit("air/setairinfo", res.data);
       this.infoData = res.data;
     });
