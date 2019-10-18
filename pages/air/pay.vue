@@ -3,7 +3,7 @@
     <div class="main">
       <div class="pay-title">
         支付总金额
-        <span class="pay-price">￥{{price}}</span>
+        <span class="pay-price">￥{{order.price}}</span>
       </div>
       <div class="pay-main">
         <h4>微信支付</h4>
@@ -25,41 +25,62 @@
 
 <script>
 import QRCode from "qrcode";
+import { async } from "q";
 
 export default {
   data() {
     return {
-      price: 0
+      order: {}
     };
   },
 
   mounted() {
-    // 这个处理方法是有缺陷的，不100%准确
     // userInfo在页面加载完才赋值
-    setTimeout(v => {
+    setTimeout(async v => {
       const { id } = this.$route.query;
       const {
         user: { userInfo }
       } = this.$store.state;
 
-      // 请求二维码
-      this.$axios({
+      // 请求订单详情
+      const res = await this.$axios({
         url: `airorders/${id}`,
         headers: {
           Authorization: `Bearer ${userInfo.token}`
         }
-      }).then(res => {
-        const { payInfo, price } = res.data;
-        this.price = price;
-
-        // 生成二维码到canvas
-        const stage = document.querySelector("#qrcode-stage");
-        QRCode.toCanvas(stage, payInfo.code_url, {
-          width: 200
-        });
+      });
+      this.order = res.data;
+      // 生成二维码到canvas
+      const stage = document.querySelector("#qrcode-stage");
+      QRCode.toCanvas(stage, this.order.payInfo.code_url, {
+        width: 200
       });
     }, 200);
-  }
+
+    this.time = setInterval(async () => {
+      const res = await this.$axios({
+        url: "/airorders/checkpay",
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.$store.state.user.userInfo.token}`
+        },
+        data: {
+          id: this.$route.query.id,
+          nonce_str: this.order.price,
+          out_trade_no: this.order.orderNo
+        }
+      });
+
+      const { statusTxt } = res.data;
+
+      if (statusTxt === "支付完成") {
+        this.$message.success(statusTxt);
+        clearInterval(this.timer);
+      }
+    }, 3000);
+  },
+
+  methods: {}
 };
 </script>
 
