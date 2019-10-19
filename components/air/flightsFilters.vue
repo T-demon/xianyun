@@ -8,7 +8,7 @@
         {{data.info.departDate}}
       </el-col>
       <el-col :span="4">
-        <el-select size="mini" v-model="airport" placeholder="起飞机场" @change="handleAirport">
+        <el-select size="mini" v-model="filters.airport" placeholder="起飞机场">
           <el-option
             v-for="(item,index) in data.options.airport"
             :key="index"
@@ -18,7 +18,7 @@
         </el-select>
       </el-col>
       <el-col :span="4">
-        <el-select size="mini" v-model="flightTimes" placeholder="起飞时间" @change="handleFlightTimes">
+        <el-select size="mini" v-model="filters.flightTimes" placeholder="起飞时间">
           <el-option
             v-for="(item,index) in data.options.flightTimes"
             :key="index"
@@ -28,7 +28,7 @@
         </el-select>
       </el-col>
       <el-col :span="4">
-        <el-select size="mini" v-model="company" placeholder="航空公司" @change="handleCompany">
+        <el-select size="mini" v-model="filters.company" placeholder="航空公司">
           <el-option
             v-for="(item, index) in data.options.company"
             :key="index"
@@ -38,8 +38,13 @@
         </el-select>
       </el-col>
       <el-col :span="4">
-        <el-select size="mini" v-model="airSize" placeholder="机型" @change="handleAirSize">
-          <el-option label="大" value="大"></el-option>
+        <el-select size="mini" v-model="filters.airSize" placeholder="机型">
+          <el-option
+            v-for="(item, index) in sizeOptions"
+            :key="index"
+            :label="item.name"
+            :value="item.size"
+          ></el-option>
         </el-select>
       </el-col>
     </el-row>
@@ -61,50 +66,64 @@ export default {
 
   data() {
     return {
-      airport: "", // 机场
-      flightTimes: "", // 出发时间
-      company: "", // 航空公司
-      airSize: "" // 机型大小
+      filters: {
+        airport: "", // 机场
+        flightTimes: "", // 出发时间
+        company: "", // 航空公司
+        airSize: "" // 机型大小
+      },
+      sizeOptions: [
+        { name: "大", size: "L" },
+        { name: "中", size: "M" },
+        { name: "小", size: "S" }
+      ]
     };
   },
 
   watch: {
-    data() {
-      console.log(this.data);
+    filters: {
+      deep: true,
+      handler() {
+        console.log(123);
+
+        var arr = this.data.flights.filter(v => {
+          let vaild = true;
+
+          // 航空公司
+          if (this.filters.company && this.filters.company !== v.airline_name) {
+            vaild = false;
+          }
+
+          // 起飞机场
+          if(this.filters.airport && this.filters.airport !== v.org_airport_name){
+            vaild = false
+          }
+
+          // 起飞时间
+          if(this.filters.flightTimes){
+            const start = +v.dep_time.split(":")[0];
+            const arr =this.filters.flightTimes.split(",")
+
+            if(start < arr[0] || start >=+arr[1]){
+              vaild =false
+            }
+          }
+
+          // 航班大小
+          if(this.filters.airSize && this.filters.airSize !== v.plane_size){
+            vaild =false
+          }
+
+          return vaild;
+        });
+        this.$emit("setDatalist", arr);
+      }
     }
   },
 
   methods: {
-    // 选择机场时候触发
-    handleAirport(value) {
-      const arr = this.data.flights.filter(v => v.org_airport_name === value);
-      this.$emit("setDatalist", arr);
-    },
-
-    // 选择出发时间时候触发
-    handleFlightTimes(value) {
-      const [from, to] = value.split(","); // [6,12]
-
-      const arr = this.data.flights.filter(v => {
-        // 出发时间小时
-        const start = +v.dep_time.split(":")[0];
-        return start >= from && start < to;
-      });
-
-      this.$emit("setDatalist", arr);
-    },
-
-    // 选择航空公司时候触发
-    handleCompany(value) {
-      const arr = this.data.flights.filter(v => v.airline_name === value);
-      this.$emit("setDatalist", arr);
-    },
-
-    // 选择机型时候触发
-    handleAirSize(value) {
-      const arr = this.data.flights.filter(v => v.plane_size === value);
-      this.$emit("setDataList", arr);
-    },
+    // 综合筛选
+    handleFlight() {},
 
     // 撤销条件时候触发
     handleFiltersCancel() {
