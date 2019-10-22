@@ -23,7 +23,7 @@
       </div>
       <div class="like option-item" :class="{active: posts.like === 5||2 }">
         <i class="iconfont icontuding" @click="handlelike(posts.id)">&#xe615;</i>
-        <p>点赞(54)</p>
+        <p>点赞({{posts.like}})</p>
       </div>
     </div>
   </div>

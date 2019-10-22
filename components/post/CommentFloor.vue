@@ -21,7 +21,7 @@
           <!-- <img
             :src="$axios.defaults.baseURL+ data.pics[0].url"
                v-if="data.pics[0].url"
-          />-->
+          /> -->
         </div>
         <em @click="handleReply">回复</em>
       </div>

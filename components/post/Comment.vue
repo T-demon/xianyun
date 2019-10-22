@@ -126,8 +126,11 @@ export default {
         content: this.content,
         pics: this.pics,
         post: this.$route.query.id,
-        follow:this.replyComment.id
       };
+      if (this.replyComment) {
+        data.follow = this.replyComment.id;
+      }
+      
       // 发请求
       const res = await this.$axios({
         method: "POST",
