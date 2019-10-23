@@ -1,8 +1,13 @@
 <template>
   <div class="comment">
     <p>评论</p>
-    <el-tag closable @close="handleClose" v-if="isshow" class="tag">回复{{tags.name}}</el-tag>
-    
+
+    <el-tag
+      closable
+      @close="handleClose"
+      v-if="this.replyComment"
+      class="tag"
+    >回复@ {{this.tags.name}}</el-tag>
     <!-- 评论框 -->
     <el-input
       type="textarea"
@@ -41,7 +46,7 @@
             v-if="item.account.defaultAvatar"
           />
           <span>{{item.account.nickname}}</span>
-          <span class="time">2019-10-21 11:08</span>
+          <span class="time">{{item.datatime}}</span>
           <span class="level">{{item.level}}</span>
         </div>
 
@@ -50,13 +55,19 @@
 
         <div class="comment-content">
           {{item.content}}
-          <div v-for="(item,index) in item.pics" :key="index">
-            <img :src="$axios.defaults.baseURL+ item.url" v-if="item.url" />
+          <div class="pics">
+            <img
+              v-for="(item,index) in item.pics"
+              :key="index"
+              :src="$axios.defaults.baseURL+ item.url"
+              v-if="item.url"
+            />
           </div>
           <em @click="handleReply(item)">回复</em>
         </div>
       </div>
     </div>
+
     <!-- 分页功能 -->
     <el-row type="flex" justify="center" style="margin-top:10px;">
       <div class="foot">
@@ -76,6 +87,7 @@
 
 <script>
 import CommentFloor from "@/components/post/CommentFloor";
+const moment = require("moment");
 export default {
   components: {
     CommentFloor
@@ -83,7 +95,7 @@ export default {
 
   data() {
     return {
-      tags: { name: "@发动机地球", type: "hidden" },
+      tags: { name: "标签一", type: "hidden" },
       isshow: true,
 
       content: "",
@@ -101,36 +113,47 @@ export default {
   },
   methods: {
     getdatalist() {
+      const post = this.$route.query.id;
       this.$axios({
-        url: "/posts/comments"
+        url: "/posts/comments?post=" + post
+        // params: {
+        //   _start: this.pageIndex-1,
+        //   _limit: this.pageSize
+        // }
       }).then(res => {
         const { data } = res.data;
         this.comments = data;
+
+        for (let key in data) {
+          data[key].datatime = moment(data.created_up).format("YYYY-MM-DD");
+        }
         console.log(this.comments);
       });
     },
     handleClose() {
-      this.isshow = !this.isshow;
+      this.replyComment = null;
     },
     handleSuccess(res, file) {
       console.log(res);
-      this.pics = res;
+      this.pics.push(res[0]);
     },
     handleRemove(fileList) {
       console.log(this.pics);
     },
+
     // 提交评论
     async Submit() {
       // 准备数据
       const data = {
         content: this.content,
         pics: this.pics,
-        post: this.$route.query.id,
+        post: this.$route.query.id
       };
+
       if (this.replyComment) {
         data.follow = this.replyComment.id;
       }
-      
+
       // 发请求
       const res = await this.$axios({
         method: "POST",
@@ -147,11 +170,9 @@ export default {
       }
       setTimeout(() => {
         this.getdatalist();
-       
       }, 200);
-      this.content = ""
-      this.$refs.upload.clearFiles()
-      
+      this.content = "";
+      this.$refs.upload.clearFiles();
     },
 
     handleSizeChange(val) {
@@ -160,13 +181,14 @@ export default {
     handleCurrentChange(val) {
       this.pageIndex = val;
     },
+
     // 点击回复按钮时候触发的方法
     handleReply(item) {
       // 获取到当前要回复的id
       this.replyComment = item;
-      this.$refs.inp.focus()
-    },
-    
+      this.$refs.inp.focus();
+      this.tags.name = item.account.nickname;
+    }
   },
 
   computed: {
@@ -180,7 +202,6 @@ export default {
   },
   mounted() {
     this.getdatalist();
-    
   }
 };
 </script>
@@ -243,14 +264,19 @@ export default {
       }
       .comment-content {
         padding: 10px 0;
+
+        .pics {
+          display: flex;
+          img {
+            width: 100px;
+            height: 100px;
+          }
+        }
         em {
+          font-size: 12px;
           float: right;
           color: #666;
           cursor: pointer;
-        }
-        img {
-          width: 100px;
-          height: 100px;
         }
       }
     }

@@ -2,36 +2,43 @@
   <div>
     <!-- 评论楼层 -->
     <div class="comment-floor">
+      <!-- 递归 -->
       <comment v-if="data.parent" :data="data.parent" @handleReply="handleReply"></comment>
 
-      <div class="user">
-        <img
-          :src="$axios.defaults.baseURL + data.account.defaultAvatar"
-          v-if="data.account.defaultAvatar"
-        />
-        <span>{{data.account.nickname}}</span>
-        <span>2019-19-16 6:06</span>
-        <span class="level">{{data.level}}</span>
-      </div>
-
-      <div class="floor-header">
-        <span class="text">{{data.content}}</span>
-
-        <div>
-          <!-- <img
-            :src="$axios.defaults.baseURL+ data.pics[0].url"
-               v-if="data.pics[0].url"
-          /> -->
+      <div ref="mous">
+        <div class="user">
+          <img
+            :src="$axios.defaults.baseURL + data.account.defaultAvatar"
+            v-if="data.account.defaultAvatar"
+          />
+          <span>{{data.account.nickname}}</span>
+          <span>{{data.created_at}}</span>
+          <span class="level">{{data.level}}</span>
         </div>
-        <em @click="handleReply">回复</em>
-      </div>
 
-      <div class="comment-content"></div>
+        <div class="floor-header">
+          <span class="text">{{data.content}}</span>
+
+          <div class="pics">
+            <img
+              v-for="(item,index) in data.pics"
+              :key="index"
+              :src="$axios.defaults.baseURL+ item.url"
+              v-if="item.url"
+            />
+          </div>
+          <em @click="handleReply" ref="rep">回复</em>
+        </div>
+
+        <div class="comment-content"></div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+const moment = require("moment");
+
 export default {
   name: "comment",
   props: {
@@ -53,6 +60,7 @@ export default {
 .comment-floor {
   padding: 10px;
   background: #f6f6f6;
+  border: 1px solid #eeeeee;
 
   .user {
     font-size: 14px;
@@ -75,6 +83,13 @@ export default {
     font-size: 13px;
     color: #666;
     padding: 20px 0;
+    .pics {
+      display: flex;
+      img {
+        width: 100px;
+        height: 100px;
+      }
+    }
     i {
       font-size: 12px;
       color: #999;
@@ -82,10 +97,6 @@ export default {
     em {
       float: right;
       cursor: pointer;
-    }
-    img {
-      width: 100px;
-      height: 100px;
     }
   }
 }

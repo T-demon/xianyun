@@ -65,22 +65,23 @@ export default {
 </script>
 
 <style scoped lang="less">
+
 .left {
-  margin-right: 30px;
-}
-.contianer {
-  padding: 20px;
-  width: 1000px;
-  margin: 20px auto;
-  .aside {
-    margin-top: 20px;
+    margin-right: 30px;
   }
-  .recommend {
-    .top {
-      font-size: 18px;
-      width: 100%;
-      padding-bottom: 10px;
+  .contianer {
+    padding: 20px;
+    width: 1000px;
+    margin: 20px auto;
+    .aside {
+      margin-top: 20px;
+    }
+    .recommend {
+      .top {
+        font-size: 18px;
+        width: 100%;
+        padding-bottom: 10px;
+      }
     }
   }
-}
 </style>
